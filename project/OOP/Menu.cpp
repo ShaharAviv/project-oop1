@@ -4,7 +4,7 @@
 #include "Exit.h"
 #include "Help.h"
 
-
+//-------SHAHAR------
 Menu::Menu()
 {
 	//m_option.resize(Max_b);
@@ -18,7 +18,6 @@ void Menu::Play()
 {
 	//make it global, or at least a member 
 	sf::RenderWindow m_window(sf::VideoMode((float)Width, (float)Height), 32u, sf::Style::Close);
-
 	while (m_window.isOpen())
 	{
 		m_window.clear();
@@ -26,7 +25,7 @@ void Menu::Play()
 		//Pictures::getInstance().playMenuBackground();
 		m_window.draw(m_background);
 
-		for (const auto& option : m_option)
+		for (const auto& option : m_option)	
 			option->draw(m_window);
 
 		getOptionFromUser(m_window);

@@ -17,7 +17,7 @@
 #include "StartingMenu.h"
 #include <iostream>
 
-bool robot_pass = false;
+//------SHAHAR----
 
 int main()
 {

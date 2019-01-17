@@ -5,7 +5,7 @@
 #include "Fire.h"
 #include "Rock.h"
 
-
+//-------SHAHAR-----
 Robot::Robot(sf::Vector2f &pos) : MoveAble(pos),m_time(0.f)
 {
 	m_texture = (Pictures::getInstance().getTexture(Robot_type));
@@ -104,6 +104,11 @@ bool Robot::collideHandler(Fire & other)
 		return true;
 	}
 	return false;
+}
+
+int Robot::getLeftBombs() const
+{
+	return m_bombs;
 }
 //--------------------------------------------------------------
 void Robot::setDirection(const sf::Event & event)

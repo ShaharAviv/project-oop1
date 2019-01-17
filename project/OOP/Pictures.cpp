@@ -1,6 +1,6 @@
 #include "Pictures.h"
 
-
+//-------SHAHAR--------
 Pictures::Pictures()
 {
 	m_objects.resize(Max);

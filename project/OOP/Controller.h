@@ -1,5 +1,7 @@
 #pragma once
 #include "Board.h"
+
+//-----SHAHAR-------
 class Controller
 {
 public:
@@ -23,6 +25,8 @@ private:
 	sf::Clock m_clock;
 	sf::Time m_time;
 	void newLevel(sf::RenderWindow &m_window); //loading the next level once you meet the door.
+	void print_win();
+	void drawScore(sf::RenderWindow& window);
 
 };
 

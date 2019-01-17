@@ -4,22 +4,18 @@
 Controller::Controller() : m_board(new Board())
 {
 }
-//--------------------------------------------------------------------
+//-----------SHAHAR---------------------------------------------------------
 void Controller::run(sf::RenderWindow &m_window)
 {
 
-	m_board->readFile(m_guards, m_staticBoard, m_robot);
+	if (!m_board->readFile(m_guards, m_staticBoard, m_robot))
+		print_win();
 	m_window.create(m_board->getWindowSize(), 32u, sf::Style::Close);
 	m_window.display();
 	
 	sf::Event event{};
 	while (m_window.isOpen())
 	{
-		if (Door::collideHandler(m_robot))
-		{
-			newLevel(m_window);
-			continue;
-		}
 
 		m_time = m_clock.getElapsedTime();
 		m_window.clear();
@@ -43,6 +39,8 @@ void Controller::run(sf::RenderWindow &m_window)
 		}
 
 		m_board->printBoard(m_bombs, m_guards, m_staticBoard, m_robot, m_window);
+		drawScore(m_window);
+
 		m_window.display();
 
 	}//TODO make a move and check for collision. maybe hold an integer to know if the move is ok and than update.
@@ -82,9 +80,14 @@ void Controller::collides(sf::RenderWindow& window)
 {
 	for (size_t i = 0; i < m_staticBoard.size(); i++)
 	{
-		m_robot->collideHandler(*m_staticBoard[i]);
+		if (m_robot->collideHandler(*m_staticBoard[i]))
+		{
+			if (typeid(*m_staticBoard[i]) == typeid(Door))
+			{
+				newLevel(window);
+			}
+		}
 		
-		if(m_robot->collideHandler())
 	}
 	for (auto& enemy : m_guards)
 	{
@@ -105,7 +108,7 @@ void Controller::movePlayers()
 	for (auto& temp : m_guards)
 		temp->move(*m_board);
 }
-
+//--------------SHAHAR-----------------------
 void Controller::setBomb()
 {
 	sf::Vector2f pos;
@@ -118,22 +121,79 @@ void Controller::setBomb()
 	std::cout << "pos:"<< pos.x << "," << pos.y << std::endl;
 	std::cout << "cell:"<< cell.x << "," << cell.y << std::endl;
 	//to not put a bomb on top of another
-	for (size_t i = 0; i < m_bombs.size(); i++)
+	for (auto & bomb :m_bombs)
 	{
-		if (m_bombs.at(i)->getPosition() == (m_robot->getPosition()))
+		auto bombcell = m_board->getCellIndex(bomb->getPosition());
+		if (bombcell== cell)
 		{
 			return;
 		}
 	}
  	std::unique_ptr<Bomb> bomb(std::make_unique<Bomb>(pos));
 	m_bombs.push_back(std::move(bomb));
+	m_robot->bombsCounterDown();
 }
-
+//------------SHAHAR---------------------------
 void Controller::newLevel(sf::RenderWindow &m_window) //loading the next level once you meet the door.
 {
+	std::cout << "new level";
 	//m_robot.setScore(m_score);
-	//m_bombs.clear();
-	m_board->readFile(m_guards, m_staticBoard, m_robot);
-	//m_win = false;
-	m_board->printBoard(m_bombs ,m_guards, m_staticBoard, m_robot, m_window);
+	m_bombs.clear();
+	m_guards.clear();
+	m_staticBoard.clear();
+	if(!m_board->readFile(m_guards, m_staticBoard, m_robot))
+		//win screen
+	m_board->printBoard(m_bombs, m_guards, m_staticBoard, m_robot, m_window);
+}
+//------------SHAHAR--------------------S
+void Controller::print_win()
+{
+	sf::Texture win_texture;
+	win_texture.loadFromFile("Images/win_image.png");
+	sf::Sprite win_sprite;
+	win_sprite.setTexture(win_texture);
+}
+
+//----------------SHAHAR---------------------------
+void Controller::drawScore(sf::RenderWindow & window) //TODO make inside functions
+{
+	sf::Text score_t;
+	score_t.setFont(*Pictures::getInstance().getFont());
+	score_t.setString("Robot Score");
+	score_t.setFillColor(sf::Color::Green);
+	score_t.setPosition(25, 910);
+	score_t.setCharacterSize(20);
+	score_t.setOutlineColor(sf::Color::Red);
+	window.draw(score_t);
+
+//----------
+
+
+	sf::Text life_t;
+	life_t.setFont(*Pictures::getInstance().getFont());
+	life_t.setString("Life");
+	life_t.setFillColor(sf::Color::Green);
+	life_t.setPosition(25, 935);
+	life_t.setCharacterSize(20);
+	life_t.setOutlineColor(sf::Color::Red);
+	window.draw(life_t);
+//-----------
+
+	sf::Text Left_bombs_t;
+	Left_bombs_t.setFont(*Pictures::getInstance().getFont());
+	Left_bombs_t.setString("Left bombs");
+	Left_bombs_t.setFillColor(sf::Color::Green);
+	Left_bombs_t.setPosition(25, 960);
+	Left_bombs_t.setCharacterSize(20);
+	Left_bombs_t.setOutlineColor(sf::Color::Red);
+	window.draw(Left_bombs_t);
+
+	sf::Text score_n;
+	score_n.setFont(*Pictures::getInstance().getFont());
+	score_n.setString(std::to_string(m_robot->getLeftBombs()));
+	score_n.setFillColor(sf::Color::Red);
+	score_n.setPosition(250, 960);
+	score_n.setCharacterSize(20);
+	score_n.setOutlineColor(sf::Color::Red);
+	window.draw(score_n);
 }

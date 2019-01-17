@@ -14,8 +14,8 @@ public:
 	virtual bool collideHandler(Robot &other);
 	virtual bool collideHandler(SmartGuard& other);
 	virtual bool collideHandler(StupidGuard& other);
-	virtual bool collideHandler(Rock& other);
-	virtual bool collideHandler(Wall& other);
+	virtual bool collideHandler(Rock& other) { return false; }
+	virtual bool collideHandler(Wall& other) { return false; }
 	virtual bool collideHandler(Fire& other);
 
 
@@ -23,3 +23,4 @@ private:
 	static bool m_registered;
 };
 
+//-----SHAHAR-----

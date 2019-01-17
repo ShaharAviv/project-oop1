@@ -1,6 +1,9 @@
 #include "Board.h"
 #include <iostream>
 #include "DynamicFactory.h"
+
+//-------SHAHAR-----
+
 Board::Board() : m_level("board.bomb.txt")//TODO name of file
 {
 	if (!m_level.is_open())
@@ -16,11 +19,14 @@ Board::~Board()
 	m_level.close();
 }
 
-
-
-void Board::readFile(vector<std::unique_ptr<Guards>> &guards, vector<std::unique_ptr<UnMoveAble>> &staticBoard,
+bool Board::readFile(vector<std::unique_ptr<Guards>> &guards, vector<std::unique_ptr<UnMoveAble>> &staticBoard,
 					std::unique_ptr<Robot> &robot)
 {
+	if (m_level.eof())
+	{
+		return false;
+	}
+
 	//sf::Clock m_time;
 	m_level >> m_row;
 	m_level >> m_col;
@@ -63,9 +69,10 @@ void Board::readFile(vector<std::unique_ptr<Guards>> &guards, vector<std::unique
 	{
 		guard->setRobot(*robot);
 	}
-	m_level.get();
+
+	return true;
 }
-//----------------------------------------------------
+//---------------------------SHAHAR-----------------------
 void Board::printBoard(const vector <std::unique_ptr<Bomb>>& bombs, const vector<std::unique_ptr<Guards>> &guards, 
 	const vector<std::unique_ptr<UnMoveAble>> &staticBoard, const std::unique_ptr<Robot>&robot,  sf::RenderWindow &window)
 {
@@ -77,12 +84,13 @@ void Board::printBoard(const vector <std::unique_ptr<Bomb>>& bombs, const vector
 		i->draw(window);
 	robot->draw(window);
 
+	//drawScore(window);
 }
 
 sf::VideoMode Board::getWindowSize()
 {
 	return sf::VideoMode(m_col * PIC_SIZE,
-		m_row * PIC_SIZE);
+		m_row * PIC_SIZE+100);
 }
 
 sf::Vector2i Board::getCellIndex(const sf::Vector2f & pos)

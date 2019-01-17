@@ -23,6 +23,7 @@ bool Door::isCollide(const sf::FloatRect & rect) const
 	}
 	return false;
 }
+
 //---------------------------------------------------------
 bool Door::collideHandler(GameObjects & other)
 {
@@ -31,7 +32,7 @@ bool Door::collideHandler(GameObjects & other)
 //----------------------------------------------------------
 bool Door::collideHandler(Robot & other)
 {
-	if (other.collideHandler(*this)) {
+	if (other.isCollide(m_sprite.getGlobalBounds())) {
 		std::cout << "Door vs Robot" << std::endl;
 		return true;
 	}
@@ -40,7 +41,7 @@ bool Door::collideHandler(Robot & other)
 //------------------------------------------------------------
 bool Door::collideHandler(SmartGuard & other)
 {
-	if (other.collideHandler(*this)) {
+	if (other.isCollide(m_sprite.getGlobalBounds())) {
 		std::cout << "Door vs SmartGuard" << std::endl;
 		return true;
 	}
@@ -49,30 +50,22 @@ bool Door::collideHandler(SmartGuard & other)
 //----------------------------------------------------------
 bool Door::collideHandler(StupidGuard & other)
 {
-	if (other.collideHandler(*this)) {
+	if (other.isCollide(m_sprite.getGlobalBounds())) {
 		std::cout << "Door vs StupidGuard" << std::endl;
 		return true;
 	}
 	return false;
 }
-//----------------------------------------------------------------
-bool Door::collideHandler(Rock & other)
-{
-	return false;
-}
-//----------------------------------------------------------
-bool Door::collideHandler(Wall & other)
-{
-	return false;
-}
+
+
 //----------------------------------------------------------
 bool Door::collideHandler(Fire & other)
 {
-	if (other.collideHandler(*this)) {
+	if (other.isCollide(m_sprite.getGlobalBounds())) {
 		std::cout << "Door vs Fire" << std::endl;
 		return true;
 	}
 	return false;
 }
 //-----------------------------------------------------------
-bool Door::m_registered = ObjectFactory::registerit(Door_c, [](sf::Vector2f &pos) -> std::unique_ptr<UnMoveAble> { return std::make_unique<Door>(pos); });
+bool Door::m_registered = ObjectFactory::registerit(Door_c, [](sf::Vector2f &place) -> std::unique_ptr<UnMoveAble> { return std::make_unique<Door>(place); });
